@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YN Search Engine</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #FF6D3B);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Header Section */
+        header {
+            margin-bottom: 30px;
+            padding: 10px;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: #fff;
+            font-weight: 700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 18px;
+            color: #e2e2e2;
+            font-weight: 400;
+            margin-top: 5px;
+        }
+
+        /* Contact Information */
+        .contact {
+            font-size: 18px;
+            color: #e2e2e2;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        /* Search Bar Section */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            outline: none;
+            transition: 0.3s ease-in-out;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .search-bar:focus {
+            border-color: #4285F4;
+            box-shadow: 0 0 8px rgba(66, 133, 244, 0.3);
+        }
+
+        .search-button {
+            padding: 20px 40px;
+            background-color: #4285F4;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-left: 15px;
+            transition: background-color 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-button:hover {
+            background-color: #357ae8;
+        }
+
+        /* Tab styles */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .tab {
+            margin: 0 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #fff;
+            color: #333;
+            font-weight: bold;
+            border-radius: 20px;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .tab:hover {
+            background-color: #4285F4;
+            color: white;
+        }
+
+        .tab-active {
+            background-color: #4285F4;
+            color: white;
+        }
+
+        /* Close button on tabs */
+        .close-tab {
+            margin-left: 10px;
+            cursor: pointer;
+            background-color: transparent;
+            color: #FF6D3B;
+            border: none;
+            font-size: 16px;
+        }
+
+        /* Search Results Section */
+        .iframe-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        iframe {
+            width: 80%;
+            height: 80vh;
+            border: none;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 10px;
+            font-size: 14px;
+            color: #fff;
+            opacity: 0.6;
+            text-align: center;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Contact Information -->
+    <div class="contact">
+        Contact: <a href="mailto:discordhim1@gmail.com" style="color: #e2e2e2; text-decoration: none;">discordhim1@gmail.com</a>
+    </div>
+
+    <header>
+        <h1>YN Search Engine</h1>
+        <p>Antonio's newly made API, have fun</p>
+    </header>
+
+    <div class="welcome-message">
+        <p>Hello! This is my first ever search engine, and I'm so excited for you to try it out. Enjoy your searches!</p>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="search-query" class="search-bar" placeholder="Antonio is here to help">
+        <button onclick="search()" class="search-button">Search</button>
+    </div>
+
+    <!-- Tabs for managing multiple search results -->
+    <div class="tabs" id="tabs-container"></div>
+
+    <!-- Container for search result iframes -->
+    <div class="iframe-container" id="iframe-container"></div>
+
+    <footer>
+        <p>YN Search Engine - Created by Antonio</p>
+    </footer>
+
+    <script>
+        let activeTabIndex = -1;
+
+        // Function that triggers the search process
+        function search() {
+            const query = document.getElementById('search-query').value;
+            if (query.trim() === '') {
+                alert('Please enter a search query');
+                return;
+            }
+
+            const iframeContainer = document.getElementById('iframe-container');
+            const tabsContainer = document.getElementById('tabs-container');
+
+            // Create new tab and iframe for the new search
+            const newTabIndex = tabsContainer.children.length;
+            const newTab = document.createElement('button');
+            newTab.className = 'tab';
+            newTab.innerText = `Search ${newTabIndex + 1}`;
+
+            // Add a close button to the tab
+            const closeButton = document.createElement('button');
+            closeButton.className = 'close-tab';
+            closeButton.innerText = 'X';
+            closeButton.onclick = function() {
+                closeTab(newTabIndex); // Close the tab when clicked
+            };
+            newTab.appendChild(closeButton);
+
+            newTab.onclick = function() { switchTab(newTabIndex); };
+
+            // Create a new iframe for displaying the search result
+            const newIframe = document.createElement('iframe');
+            newIframe.src = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
+            newIframe.style.display = 'none'; // Initially hide the iframe
+
+            // Add the new tab and iframe to their respective containers
+            tabsContainer.appendChild(newTab);
+            iframeContainer.appendChild(newIframe);
+
+            // Activate the new tab
+            switchTab(newTabIndex);
+        }
+
+        // Switch to a tab and display its iframe
+        function switchTab(tabIndex) {
+            const tabs = document.getElementsByClassName('tab');
+            const iframes = document.getElementsByTagName('iframe');
+
+            // Deactivate all tabs
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('tab-active');
+            }
+
+            // Hide all iframes
+            for (let i = 0; i < iframes.length; i++) {
+                iframes[i].style.display = 'none';
+            }
+
+            // Activate the clicked tab and show the associated iframe
+            tabs[tabIndex].classList.add('tab-active');
+            iframes[tabIndex].style.display = 'block';
+            activeTabIndex = tabIndex;
+        }
+
+        // Function to close a tab
+        function closeTab(tabIndex) {
+            const tabs = document.getElementsByClassName('tab');
+            const iframes = document.getElementsByTagName('iframe');
+
+            // Remove the tab and its corresponding iframe
+            tabs[tabIndex].remove();
+            iframes[tabIndex].remove();
+
+            // If the closed tab was the active tab, switch to the last one
+            if (tabIndex === activeTabIndex) {
+                activeTabIndex = -1;
+                if (tabs.length > 0) {
+                    switchTab(tabs.length - 1); // Switch to the last remaining tab
+                }
+            } else if (tabIndex < activeTabIndex) {
+                activeTabIndex--; // Adjust active tab index if necessary
+            }
+        }
+
+        // Add event listener for "Enter" key
+        document.getElementById('search-query').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                search(); // Trigger the search function when Enter is pressed
+            }
+        });
+    </script>
+
+</body>
+</html>
